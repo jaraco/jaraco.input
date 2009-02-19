@@ -34,6 +34,7 @@ setup (name = 'jaraco.input',
 			],
 		),
 		install_requires=[
+			"pyglet",
 		],
 		extras_require = {
 		},
