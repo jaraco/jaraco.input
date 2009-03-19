@@ -16,7 +16,7 @@ __date__ = '$Date$'[7:-2]
 name = 'jaraco.input'
 
 setup (name = name,
-		version = '1.0',
+		version = '1.1',
 		description = 'Logo Mindstorms NXT Routines',
 		long_description = read_long_description(),
 		author = 'Jason R. Coombs',
