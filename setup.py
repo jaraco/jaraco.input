@@ -17,7 +17,7 @@ name = 'jaraco.input'
 
 setup (name = name,
 		version = '1.1',
-		description = 'Logo Mindstorms NXT Routines',
+		description = 'Hardware input support',
 		long_description = read_long_description(),
 		author = 'Jason R. Coombs',
 		author_email = 'jaraco@jaraco.com',
