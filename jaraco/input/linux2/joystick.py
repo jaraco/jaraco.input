@@ -15,6 +15,17 @@ from select import select
 
 from jaraco.input import NormalizingAxisJoystick as NormalizingJS
 
+# Linux only gives us axis numbers: translate these to meaningful
+#  names (as found in the XINPUT_GAMEPAD structure)
+axis_name_map = {
+	0: 'l_thumb_x',
+	1: 'l_thumb_y',
+	2: 'left_trigger',
+	3: 'r_thumb_x',
+	4: 'r_thumb_y',
+	5: 'right_trugger',
+	}
+
 class Joystick(event.EventDispatcher, NormalizingJS):
 	JS_EVENT_BUTTON = 0x01 #/* button pressed/released */
 	JS_EVENT_AXIS = 0x02  #/* joystick moved */
@@ -43,7 +54,8 @@ class Joystick(event.EventDispatcher, NormalizingJS):
 		evt = type & ~self.JS_EVENT_INIT
 		if evt == self.JS_EVENT_AXIS:
 			value = self.translate(value, number)
-			self.dispatch_event('on_axis', number, value)
+			axis = axis_name_map.get(number, number)
+			self.dispatch_event('on_axis', axis, value)
 		elif evt == self.JS_EVENT_BUTTON:
 			self.dispatch_event('on_button', number, value==1)
 

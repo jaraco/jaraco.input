@@ -22,6 +22,9 @@ class NormalizingAxisJoystick(object):
 		return float(value)/(2**data_bits-1)
 
 	def translate_identity(self, value, axis):
+		"""
+		A translation method that always returns the same value.
+		"""
 		return value
 
 	def get_data_size_for_axis(self, axis):
@@ -29,11 +32,8 @@ class NormalizingAxisJoystick(object):
 		Return the data size in bytes represented by the
 		given axis.
 		
-		This implementation assumes the axis is a numeric
-		index and the joystick behaves like an xbox 360
-		controller in Linux.
-		
-		i.e. axes 0, 1, 3, 4 are 16-bit values (2 bytes)
-		     axes 2, 5 are 8-bit values (1 byte)
+		i.e. thumbs are 16-bit values (2 bytes)
+		     triggers are 8-bit values (1 byte)
+		     all other values are assumed to also be 16-bit values
 		"""
-		return [2,1][axis in (2,5)]
+		return [2,1][axis in ('left_trigger', 'right_trigger')]
