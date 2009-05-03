@@ -13,19 +13,22 @@ from glob import glob
 import struct
 from select import select
 
-class Joystick(event.EventDispatcher):
+from jaraco.input import NormalizingAxisJoystick as NormalizingJS
+
+class Joystick(event.EventDispatcher, NormalizingJS):
 	JS_EVENT_BUTTON = 0x01 #/* button pressed/released */
 	JS_EVENT_AXIS = 0x02  #/* joystick moved */
 	JS_EVENT_INIT = 0x80  #/* initial state of device */
 	JS_EVENT = "IhBB"
 	JS_EVENT_SIZE = struct.calcsize(JS_EVENT)
 
-	def __init__(self, device):
+	def __init__(self, device, normalize_axes=True):
 		"device is numeric index or full path"
 		if isinstance(device, (long, int)):
 			device = '/dev/input/js%d' % device
 		event.EventDispatcher.__init__(self)
 		self.dev = open(device)
+		self.set_translate_method(normalize_axes=True)
 
 	@classmethod
 	def enumerate_devices(self):
@@ -39,6 +42,7 @@ class Joystick(event.EventDispatcher):
 		time, value, type, number = struct.unpack(self.JS_EVENT, evt)
 		evt = type & ~self.JS_EVENT_INIT
 		if evt == self.JS_EVENT_AXIS:
+			value = self.translate(value, number)
 			self.dispatch_event('on_axis', number, value)
 		elif evt == self.JS_EVENT_BUTTON:
 			self.dispatch_event('on_button', number, value==1)

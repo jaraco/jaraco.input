@@ -103,6 +103,10 @@ class XInputJoystick(event.EventDispatcher, NormalisingJS):
 	"""
 	max_devices = 4
 	
+	# axis fields are everything but the buttons
+	axis_fields = dict(XINPUT_GAMEPAD._fields_)
+	axis_fields.pop('buttons')
+	
 	def __init__(self, device_number, normalize_axes=True):
 		values = vars()
 		del values['self']
@@ -159,20 +163,25 @@ class XInputJoystick(event.EventDispatcher, NormalisingJS):
 		self.dispatch_event('on_state_changed', state)
 		self.dispatch_axis_events(state)
 		self.dispatch_button_events(state)
-		
+	
 	def dispatch_axis_events(self, state):
-		# axis fields are everything but the buttons
-		axis_fields = dict(XINPUT_GAMEPAD._fields_)
-		axis_fields.pop('buttons')
-		for axis, type in axis_fields.items():
+		for axis in self.axis_fields:
 			old_val = getattr(self._last_state.gamepad, axis)
 			new_val = getattr(state.gamepad, axis)
-			data_size = ctypes.sizeof(type)
-			old_val = self.translate(old_val, data_size)
-			new_val = self.translate(new_val, data_size)
+			old_val = self.translate(old_val, axis)
+			new_val = self.translate(new_val, axis)
 			# todo: implement some tolerance and deadzones to dampen noise
 			if old_val != new_val:
 				self.dispatch_event('on_axis', axis, new_val)
+
+	def get_data_size_for_axis(self, axis):
+		"""
+		Override get_data_size_for_axis for two reasons:
+		1) This class passes axis names instead of numeric indices.
+		2) Data size is determined from the actual structure.
+		"""
+		type = self.axis_fields[axis]
+		return ctypes.sizeof(type)
 
 	def dispatch_button_events(self, state):
 		changed = state.gamepad.buttons ^ self._last_state.gamepad.buttons

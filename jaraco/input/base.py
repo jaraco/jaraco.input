@@ -3,20 +3,37 @@ class NormalizingAxisJoystick(object):
 	def set_translate_method(self, normalize_axes):
 		"""
 		Set the method that will be called to normalize
-		the values for analog axis.
+		the values for analog axis.  This should be called by the
+		constructor.
 		"""
 		choices = [self.translate_identity, self.translate_using_data_size]
 		self.translate = choices[normalize_axes]
 
-	def translate_using_data_size(self, value, data_size):
+	def translate_using_data_size(self, value, axis):
 		"""
 		Normalizes analog data to [0,1] for unsigned data
 		and [-0.5,0.5] for signed data.
-		data_size is the binary size of the data in bytes.
+		
+		The data size represents size in bytes used to represent
+		the range of values that might be supplied by the axis.
 		"""
+		data_size = self.get_data_size_for_axis(axis)
 		data_bits = 8*data_size
 		return float(value)/(2**data_bits-1)
 
-	def translate_identity(self, value, data_size=None):
+	def translate_identity(self, value, axis):
 		return value
 
+	def get_data_size_for_axis(self, axis):
+		"""
+		Return the data size in bytes represented by the
+		given axis.
+		
+		This implementation assumes the axis is a numeric
+		index and the joystick behaves like an xbox 360
+		controller in Linux.
+		
+		i.e. axes 0, 1, 3, 4 are 16-bit values (2 bytes)
+		     axes 2, 5 are 8-bit values (1 byte)
+		"""
+		return [2,1][axis in (2,5)]
