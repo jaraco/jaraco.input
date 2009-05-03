@@ -25,7 +25,7 @@ class Joystick(event.EventDispatcher):
 		if isinstance(device, (long, int)):
 			device = '/dev/input/js%d' % device
 		event.EventDispatcher.__init__(self)
-		self.dev = open(dev)
+		self.dev = open(device)
 
 	@classmethod
 	def enumerate_devices(self):
