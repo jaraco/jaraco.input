@@ -18,11 +18,3 @@ You can install it with ``easy_install jaraco.input``, or from the
 `subversion repository
 <https://svn.jaraco.com/jaraco/python/jaraco.input#egg=jaraco.input-dev>`_ with
 ``easy_install jaraco.input==dev``.
-
-Changes
--------
-
-1.0
-~~~
-
-* Initial release
