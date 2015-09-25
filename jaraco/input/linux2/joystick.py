@@ -72,11 +72,11 @@ if __name__ == "__main__":
 	j = Joystick(0)
 	@j.event
 	def on_button(button, pressed):
-		print 'button', button, pressed
+		print('button', button, pressed)
 
 	@j.event
 	def on_axis(axis, value):
-		print 'axis', axis, value
+		print('axis', axis, value)
 
 	while True:
 		j.dispatch_events()
