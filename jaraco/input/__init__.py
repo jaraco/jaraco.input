@@ -1,19 +1,15 @@
-#!/usr/bin/env python
-
 """
 Input support
 """
 
-# $Id$
-
 __all__ = ['Joystick']
 
 import sys
+import importlib
 
 platform_path = '.'.join((__name__, sys.platform))
 
 try:
-	mod = __import__(platform_path, globals(), locals(), ['Joystick'])
-	Joystick = mod.Joystick
+	Joystick = importlib.import_module(platform_path).Joystick
 except ImportError:
 	pass
