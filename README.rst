@@ -1,20 +1,14 @@
-jaraco.input
-============
+.. image:: https://img.shields.io/pypi/v/jaraco.input.svg
+   :target: https://pypi.org/project/jaraco.input
 
-.. contents::
+.. image:: https://img.shields.io/pypi/pyversions/jaraco.input.svg
 
-Status and License
-------------------
+.. image:: https://img.shields.io/travis/jaraco/jaraco.input/master.svg
+   :target: https://travis-ci.org/jaraco/jaraco.input
 
-``jaraco.input`` is an early implementation of an input support library.
+.. image:: https://readthedocs.org/projects/jaracoinput/badge/?version=latest
+   :target: https://jaracoinput.readthedocs.io/en/latest/?badge=latest
+
+An early implementation of an input support library.
 It currently implements support for an XBox 360 controller in Windows
 and for a generic Linux joystick, both using the pyglet event model.
-
-``jaraco.input`` is written by Jason R. Coombs.  It is licensed under an
-`MIT-style permissive license
-<https://svn.jaraco.com/jaraco/python/jaraco.input/docs/license.txt>`_.
-
-You can install it with ``easy_install jaraco.input``, or from the
-`subversion repository
-<https://svn.jaraco.com/jaraco/python/jaraco.input#egg=jaraco.input-dev>`_ with
-``easy_install jaraco.input==dev``.
