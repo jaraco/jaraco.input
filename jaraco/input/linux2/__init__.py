@@ -1,1 +1,4 @@
-from jaraco.input.linux2.joystick import Joystick
+from .joystick import Joystick
+
+
+__all__ = ['Joystick']

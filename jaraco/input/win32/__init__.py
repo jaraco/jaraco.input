@@ -1,1 +1,4 @@
-from jaraco.input.win32.xinput import XInputJoystick as Joystick
+from .xinput import XInputJoystick as Joystick
+
+
+__all__ = ['Joystick']

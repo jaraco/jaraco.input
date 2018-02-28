@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division
+
 
 class NormalizingAxisJoystick(object):
 	def set_translate_method(self, normalize_axes):
@@ -13,13 +15,13 @@ class NormalizingAxisJoystick(object):
 		"""
 		Normalizes analog data to [0,1] for unsigned data
 		and [-0.5,0.5] for signed data.
-		
+
 		The data size represents size in bytes used to represent
 		the range of values that might be supplied by the axis.
 		"""
 		data_size = self.get_data_size_for_axis(axis)
-		data_bits = 8*data_size
-		return float(value)/(2**data_bits-1)
+		data_bits = 8 * data_size
+		return value / (2**data_bits - 1)
 
 	def translate_identity(self, value, axis):
 		"""
@@ -31,9 +33,9 @@ class NormalizingAxisJoystick(object):
 		"""
 		Return the data size in bytes represented by the
 		given axis.
-		
+
 		i.e. thumbs are 16-bit values (2 bytes)
-		     triggers are 8-bit values (1 byte)
-		     all other values are assumed to also be 16-bit values
+		triggers are 8-bit values (1 byte)
+		all other values are assumed to also be 16-bit values
 		"""
-		return [2,1][axis in ('left_trigger', 'right_trigger')]
+		return [2, 1][axis in ('left_trigger', 'right_trigger')]

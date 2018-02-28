@@ -3,11 +3,11 @@
 # $Id$
 
 """
-jaraco.nxt.xinput
-
 Module for interfacing with the Microsoft XBox 360 controllers
 via the XInput library.
 """
+
+from __future__ import division
 
 import ctypes
 import sys
@@ -15,33 +15,39 @@ import time
 from operator import itemgetter, attrgetter
 from itertools import count, starmap
 
+from six.moves import builtins
+
 import six
 from pyglet import event
 
 from jaraco.input.base import NormalizingAxisJoystick as NormalizingJS
 
+
 class XINPUT_GAMEPAD(ctypes.Structure):
 	_fields_ = [
-		('buttons', ctypes.c_ushort), # wButtons
-		('left_trigger', ctypes.c_ubyte), # bLeftTrigger
-		('right_trigger', ctypes.c_ubyte), # bLeftTrigger
-		('l_thumb_x', ctypes.c_short), # sThumbLX
-		('l_thumb_y', ctypes.c_short), # sThumbLY
-		('r_thumb_x', ctypes.c_short), # sThumbRx
-		('r_thumb_y', ctypes.c_short), # sThumbRy
+		('buttons', ctypes.c_ushort),  # wButtons
+		('left_trigger', ctypes.c_ubyte),  # bLeftTrigger
+		('right_trigger', ctypes.c_ubyte),  # bLeftTrigger
+		('l_thumb_x', ctypes.c_short),  # sThumbLX
+		('l_thumb_y', ctypes.c_short),  # sThumbLY
+		('r_thumb_x', ctypes.c_short),  # sThumbRx
+		('r_thumb_y', ctypes.c_short),  # sThumbRy
 	]
+
 
 class XINPUT_STATE(ctypes.Structure):
 	_fields_ = [
-		('packet_number', ctypes.c_ulong), # dwPacketNumber
-		('gamepad', XINPUT_GAMEPAD), # Gamepad
+		('packet_number', ctypes.c_ulong),  # dwPacketNumber
+		('gamepad', XINPUT_GAMEPAD),  # Gamepad
 	]
+
 
 # todo: is this the right DLL?  Should I also try others?
 xinput = ctypes.windll.xinput9_1_0
 # others I've encountered:
 # xinput1_2, xinput1_1 (32-bit Vista SP1)
 # xinput1_3 (64-bit Vista SP1)
+
 
 def struct_dict(struct):
 	"""
@@ -58,6 +64,7 @@ def struct_dict(struct):
 		return field, getattr(struct, field)
 	return dict(map(get_pair, struct._fields_))
 
+
 def get_bit_values(number, size=32):
 	"""
 	Get bit values as a list for a given number
@@ -66,7 +73,7 @@ def get_bit_values(number, size=32):
 	True
 
 	>>> get_bit_values(0xDEADBEEF)
-	[1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1]
+	[1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, ..., 0, 1, 1, 1, 1]
 
 	You may override the default word size of 32-bits to match your actual
 	application.
@@ -79,8 +86,9 @@ def get_bit_values(number, size=32):
 	res = list(gen_bit_values(number))
 	res.reverse()
 	# 0-pad the most significant bit
-	res = [0]*(size-len(res)) + res
+	res = [0] * (size - len(res)) + res
 	return res
+
 
 def gen_bit_values(number):
 	"""
@@ -88,15 +96,17 @@ def gen_bit_values(number):
 	significant 1 bit, beginning with the least significant bit.
 	"""
 	if six.PY2:
-		number = long(number)
+		number = builtins.long(number)
 	while number:
 		yield number & 0x1
 		number >>= 1
 
+
 ERROR_DEVICE_NOT_CONNECTED = 1167
 ERROR_SUCCESS = 0
 
-class XInputJoystick(event.EventDispatcher, NormalisingJS):
+
+class XInputJoystick(event.EventDispatcher, NormalizingJS):
 	"""
 	XInputJoystick
 
@@ -132,7 +142,11 @@ class XInputJoystick(event.EventDispatcher, NormalisingJS):
 		if res == ERROR_SUCCESS:
 			return state
 		if res != ERROR_DEVICE_NOT_CONNECTED:
-			raise RuntimeError("Unknown error %d attempting to get state of device %d" % (res, self.device_number))
+			msg = (
+				"Unknown error %d attempting to get state of device %d"
+				% (res, self.device_number)
+			)
+			raise RuntimeError(msg)
 		# else return None (device is not connected)
 
 	def is_connected(self):
@@ -195,7 +209,8 @@ class XInputJoystick(event.EventDispatcher, NormalisingJS):
 		changed.reverse()
 		buttons_state.reverse()
 		button_numbers = count(1)
-		changed_buttons = filter(itemgetter(0), zip(changed, button_numbers, buttons_state))
+		values = zip(changed, button_numbers, buttons_state)
+		changed_buttons = filter(itemgetter(0), values)
 		tuple(starmap(self.dispatch_button_event, changed_buttons))
 
 	def dispatch_button_event(self, changed, number, pressed):
@@ -214,12 +229,14 @@ class XInputJoystick(event.EventDispatcher, NormalisingJS):
 	def on_missed_packet(self, number):
 		pass
 
+
 map(XInputJoystick.register_event_type, [
 	'on_state_changed',
 	'on_axis',
 	'on_button',
 	'on_missed_packet',
 ])
+
 
 def determine_optimal_sample_rate(joystick=None):
 	"""
@@ -233,20 +250,22 @@ def determine_optimal_sample_rate(joystick=None):
 	"""
 	# in my experience, you want to probe at 200-2000Hz for optimal
 	#  performance
-	if joystick is None: joystick = XInputJoystick.enumerate_devices()[0]
+	if joystick is None:
+		joystick = XInputJoystick.enumerate_devices()[0]
 
 	j = joystick
 
-	print("Move the joystick or generate button events characteristic of your app")
+	print(
+		"Move the joystick or generate button events characteristic of your app")
 	print("Hit Ctrl-C or press button 6 (<, Back) to quit.")
 
 	# here I use the joystick object to store some state data that
 	#  would otherwise not be in scope in the event handlers
 
 	# begin at 1Hz and work up until missed messages are eliminated
-	j.probe_frequency = 1 #Hz
+	j.probe_frequency = 1  # Hz
 	j.quit = False
-	j.target_reliability = .99 # okay to lose 1 in 100 messages
+	j.target_reliability = .99  # okay to lose 1 in 100 messages
 
 	@j.event
 	def on_button(button, pressed):
@@ -264,8 +283,9 @@ def determine_optimal_sample_rate(joystick=None):
 
 	while not j.quit:
 		j.dispatch_events()
-		time.sleep(1.0/j.probe_frequency)
+		time.sleep(1 / j.probe_frequency)
 	print("final probe frequency was %s Hz" % j.probe_frequency)
+
 
 def sample_first_joystick():
 	"""
@@ -291,19 +311,20 @@ def sample_first_joystick():
 	def on_axis(axis, value):
 		print('axis', axis, value)
 
-	#@j.event
-	#def on_state_changed(state):
-	#	print('state has changed', state.packet_number)
-	#	print(struct_dict(state.gamepad))
+	# @j.event
+	# def on_state_changed(state):
+	# 	print('state has changed', state.packet_number)
+	# 	print(struct_dict(state.gamepad))
 
-	#@j.event
-	#def on_missed_packet(number):
-	#	print('missed %(number)d packets' % vars())
+	# @j.event
+	# def on_missed_packet(number):
+	# 	print('missed %(number)d packets' % vars())
 
 	while True:
 		j.dispatch_events()
 		time.sleep(.01)
 
+
 if __name__ == "__main__":
 	sample_first_joystick()
-	#determine_optimal_sample_rate()
+	# determine_optimal_sample_rate()
