@@ -1,7 +1,3 @@
-from six.moves import builtins
-import six
-
-
 def get_bit_values(number, size=32):
 	"""
 	Get bit values as a list for a given number
@@ -32,8 +28,6 @@ def gen_bit_values(number):
 	Return a zero or one for each bit of a numeric value up to the most
 	significant 1 bit, beginning with the least significant bit.
 	"""
-	if six.PY2:
-		number = builtins.long(number)
 	while number:
 		yield number & 0x1
 		number >>= 1
