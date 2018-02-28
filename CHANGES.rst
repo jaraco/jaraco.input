@@ -1,5 +1,5 @@
-1.0.1
-=====
+v1.1.0
+======
 
 * Refresh package.
 * Minor bug fixes.
