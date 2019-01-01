@@ -6,6 +6,9 @@
 .. image:: https://img.shields.io/travis/jaraco/jaraco.input/master.svg
    :target: https://travis-ci.org/jaraco/jaraco.input
 
+.. .. image:: https://img.shields.io/appveyor/ci/jaraco/jaraco-input/master.svg
+..    :target: https://ci.appveyor.com/project/jaraco/jaraco-input/branch/master
+
 .. image:: https://readthedocs.org/projects/jaracoinput/badge/?version=latest
    :target: https://jaracoinput.readthedocs.io/en/latest/?badge=latest
 
