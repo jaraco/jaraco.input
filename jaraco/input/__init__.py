@@ -10,6 +10,6 @@ import importlib
 platform_path = '.'.join((__name__, sys.platform))
 
 try:
-    Joystick = importlib.import_module(platform_path).Joystick
+    Joystick = importlib.import_module(platform_path).Joystick  # type: ignore
 except ImportError:
     pass
