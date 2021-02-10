@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Linux joystick support
 
@@ -11,8 +9,6 @@ from pyglet import event
 from glob import glob
 import struct
 from select import select
-
-import six
 
 from jaraco.input import NormalizingAxisJoystick as NormalizingJS
 
@@ -37,7 +33,7 @@ class Joystick(event.EventDispatcher, NormalizingJS):
 
     def __init__(self, device, normalize_axes=True):
         "device is numeric index or full path"
-        if isinstance(device, six.integer_types):
+        if isinstance(device, int):
             device = '/dev/input/js%d' % device
         event.EventDispatcher.__init__(self)
         self.dev = open(device)

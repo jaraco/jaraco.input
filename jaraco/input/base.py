@@ -1,7 +1,4 @@
-from __future__ import absolute_import, division
-
-
-class NormalizingAxisJoystick(object):
+class NormalizingAxisJoystick:
     def set_translate_method(self, normalize_axes):
         """
         Set the method that will be called to normalize

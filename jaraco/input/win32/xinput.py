@@ -1,13 +1,7 @@
-#!/usr/bin/env python
-
-# $Id$
-
 """
 Module for interfacing with the Microsoft XBox 360 controllers
 via the XInput library.
 """
-
-from __future__ import division
 
 import ctypes
 import sys
@@ -194,7 +188,7 @@ class XInputJoystick(event.EventDispatcher, NormalizingJS):
         pass
 
 
-map(
+list(map(
     XInputJoystick.register_event_type,
     [
         'on_state_changed',
@@ -202,7 +196,7 @@ map(
         'on_button',
         'on_missed_packet',
     ],
-)
+))
 
 
 def determine_optimal_sample_rate(joystick=None):
