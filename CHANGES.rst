@@ -1,3 +1,8 @@
+v2.1.0
+======
+
+* Refresh packaging. Require Python 3.6.
+
 v2.0.0
 ======
 
