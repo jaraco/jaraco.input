@@ -18,7 +18,7 @@ class NormalizingAxisJoystick:
         """
         data_size = self.get_data_size_for_axis(axis)
         data_bits = 8 * data_size
-        return value / (2 ** data_bits - 1)
+        return value / (2**data_bits - 1)
 
     def translate_identity(self, value, axis):
         """

@@ -188,15 +188,17 @@ class XInputJoystick(event.EventDispatcher, NormalizingJS):
         pass
 
 
-list(map(
-    XInputJoystick.register_event_type,
-    [
-        'on_state_changed',
-        'on_axis',
-        'on_button',
-        'on_missed_packet',
-    ],
-))
+list(
+    map(
+        XInputJoystick.register_event_type,
+        [
+            'on_state_changed',
+            'on_axis',
+            'on_button',
+            'on_missed_packet',
+        ],
+    )
+)
 
 
 def determine_optimal_sample_rate(joystick=None):
