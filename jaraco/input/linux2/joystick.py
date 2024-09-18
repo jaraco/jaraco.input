@@ -4,13 +4,13 @@ Linux joystick support
 borrowed from http://entitycrisis.blogspot.com/2008/02/pyglet-joystick.html
 """
 
-from pyglet import event
-
-from glob import glob
 import struct
+from glob import glob
 from select import select
 
-from jaraco.input import NormalizingAxisJoystick as NormalizingJS
+from pyglet import event
+
+from jaraco.input.base import NormalizingAxisJoystick as NormalizingJS
 
 # Linux only gives us axis numbers: translate these to meaningful
 #  names (as found in the XINPUT_GAMEPAD structure)
