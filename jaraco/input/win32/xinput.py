@@ -3,11 +3,14 @@ Module for interfacing with the Microsoft XBox 360 controllers
 via the XInput library.
 """
 
+from __future__ import annotations
+
 import ctypes
 import sys
 import time
-from operator import itemgetter, attrgetter
 from itertools import count, starmap
+from operator import attrgetter, itemgetter
+from typing import ClassVar
 
 from pyglet import event
 
@@ -16,7 +19,7 @@ from ..binary import get_bit_values
 
 
 class XINPUT_GAMEPAD(ctypes.Structure):
-    _fields_ = [
+    _fields_: ClassVar[list[tuple[str, type[ctypes._CData]]]] = [
         ('buttons', ctypes.c_ushort),  # wButtons
         ('left_trigger', ctypes.c_ubyte),  # bLeftTrigger
         ('right_trigger', ctypes.c_ubyte),  # bLeftTrigger
